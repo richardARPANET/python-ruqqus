@@ -1,2 +1,3 @@
 # raw
-Ruqqus API Wrapper
+
+Python API Wrapper for Ruqqus.
