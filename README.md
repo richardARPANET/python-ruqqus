@@ -1,3 +1,3 @@
 # python-ruqqus
 
-Python Wrapper for Ruqqus API.
+Python Wrapper for Ruqqus API
