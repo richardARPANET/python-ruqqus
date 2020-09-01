@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import requests
 from time import time
-class raw:
+class Raw:
 
     def __init__(self, headers, client_id, secret):
         self.url = "https://ruqqus.com"
