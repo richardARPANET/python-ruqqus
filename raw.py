@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import requests
 from time import time
+
+
 class Raw:
 
     def __init__(self, headers, client_id, secret):
@@ -9,13 +11,12 @@ class Raw:
         self.client_secret = secret
         self.token_expire_utc = 0
         self.refresh_token = None
-        #self.getAccessToken(code=ABCDEFG)
+        # self.getAccessToken(code=ABCDEFG)
 
     def get(self, *args, **kwargs):
 
         type = kwargs['type'].lower()
         self.getHeaders(user_agent="tester by @arkitekt")
-
 
         if type == "front":
             return requests.get(url=f"{self.url}/api/v1/front/listing",
@@ -34,8 +35,8 @@ class Raw:
                                 headers=self.headers).json()
 
         elif type == "comment":
-            return requests.get(url = f"{self.url}/api/v1/comment/{kwargs['commentId']}",
-                               headers=self.headers).json()
+            return requests.get(url=f"{self.url}/api/v1/comment/{kwargs['commentId']}",
+                                headers=self.headers).json()
 
     def getHeaders(self, *args, **kwargs):
 
@@ -56,8 +57,8 @@ class Raw:
                 }
 
         r = requests.post(url=f"{self.url}/oauth/grant",
-                             headers=self.headers,
-                             data=data).json()
+                          headers=self.headers,
+                          data=data).json()
 
         self.access_token = r['access_token']
         return r
