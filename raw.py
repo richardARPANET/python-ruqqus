@@ -9,25 +9,28 @@ class raw:
         self.client_id = client_id
         self.client_secret = secret
 
-    def getFront(self):
-        return requests.get(url=f"{self.url}api/v1/front/listing",
-                            headers=self.headers).json()
+    def get(self, *args, **kwargs):
+        type = kwargs['type'].lower()
 
-    def getGuild(self, guildName):
-        return requests.get(url=f"{self.url}api/v1/guild/{guildName}/listing",
-                            headers=self.headers).json()
+        if type == "front":
+            return requests.get(url=f"{self.url}api/v1/front/listing",
+                                headers=self.headers).json()
 
-    def getUser(self, userName):
-        return requests.get(url=f"{self.url}api/v1/user/{userName}",
-                            headers=self.headers).json()
+        elif type == "guild":
+            return requests.get(url=f"{self.url}api/v1/guild/{kwargs['guildName']}/listing",
+                                headers=self.headers).json()
 
-    def getPost(self, postId):
-        return requests.get(url=f"{self.url}api/v1/post/{postId}",
-                            headers=self.headers).json()
+        elif type == "user":
+            return requests.get(url=f"{self.url}api/v1/user/{kwargs['username']}",
+                                headers=self.headers).json()
 
-    def getComment(self, commentId):
-        return requests.get(url = f"{self.url}api/v1/comment/{commentId}",
-                           headers=self.headers).json()
+        elif type == "post":
+            return requests.get(url=f"{self.url}api/v1/post/{kwargs['postId']}",
+                                headers=self.headers).json()
+
+        elif type == "comment":
+            return requests.get(url = f"{self.url}api/v1/comment/{kwargs['commentId']}",
+                               headers=self.headers).json()
 
     def refreshToken(self):
         data = {"client_id": self.client_id,
