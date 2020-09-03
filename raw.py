@@ -150,13 +150,19 @@ class Raw:
         else:
             return {"error": "You must provide a user-agent."}
 
-    def refreshToken(self):
+    def refreshToken(self, refreshToken=None):
 
         data = {"client_id": self.client_id,
                 "client_secret": self.client_secret,
-                "grant_type": "refresh",
-                "refresh_token": self.refresh_token
-                }
+                "grant_type": "refresh"}
+
+        if not self.refresh_token:
+
+            if refreshToken:
+                data["refresh_token"] = refreshToken
+
+        else:
+            data["refresh_token"] = self.refresh_token
 
         r = requests.post(url=f"{self.url}/oauth/grant",
                           headers=self.headers,
