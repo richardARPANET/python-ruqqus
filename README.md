@@ -6,6 +6,6 @@ Python Wrapper for Ruqqus API
 
 Run: `pip3 install ruqqus`
 
-## Use in your application
+## How to implement python-ruqqus in your application
 
 `import ruqqus`
