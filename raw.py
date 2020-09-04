@@ -3,7 +3,11 @@ import requests
 from time import time
 
 class Raw:
-
+    """
+    Pass in a
+    :client_id and :client_secret
+    :code or :access_token or :refresh_token
+    """
     def __init__(self, client_id, client_secret, code=None, access_token=None, refresh_token=None):
 
         self.headers = {}
@@ -11,14 +15,15 @@ class Raw:
         self.client_id = client_id
         self.client_secret = client_secret
         self.access_token = access_token
+        self.refresh_token = refresh_token
         self.code = code
         self.user_agent = None
-        self.refresh_token = None
         self.token_expire_utc = 0
+        self.header = {}
 
-        self.getHeaders(user_agent="tester by @arkitekt")
+        self.getHeaders(userAgent="tester by @arkitekt")
 
-        if not self.client_id or self.client_secret:
+        if not self.client_id or not self.client_secret:
             exit("You must provide both a 'client_id' and 'client_secret")
 
         elif self.client_id and self.client_secret and not self.code and not self.access_token:
@@ -48,7 +53,7 @@ class Raw:
     def identity(self):
         self.getHeaders()
 
-        return response.get(url=f"{self.url}/api/v1/identity",
+        return requests.get(url=f"{self.url}/api/v1/identity",
                             headers=self.headers).json()
 
     def user(self, userName=None, type=None):
@@ -71,18 +76,18 @@ class Raw:
                                 headers=self.headers).json()
 
         elif type == "sub":
-            return requests.post(url=f"{self.url}/api/v1/follow/{userName}",
+            return requests.post(url=f"{self.url}/api/follow/{userName}",
                                 headers=self.headers).json()
 
         elif type == "unsub":
-            return requests.post(url=f"{self.url}/api/v1/follow/{userName}",
+            return requests.post(url=f"{self.url}/api/unfollow/{userName}",
                                  headers=self.headers).json()
         else:
             return {"error": "Invalid Call"}
 
     def guild(self, guildName=None, type=None):
 
-        self.getHeaders(user_agent="tester by @arkitekt")
+        self.getHeaders(userAgent="tester by @arkitekt")
 
         if not guildName:
             return {"error": "You must provide a guildName."}
@@ -114,7 +119,7 @@ class Raw:
 
     def get(self, type=None, sort=None, time=None, guildName=None, userName=None, postId=None, commentId=None):
 
-        self.getHeaders(user_agent="tester by @arkitekt")
+        self.getHeaders(userAgent="tester by @arkitekt")
 
         if not type:
             return {"error": "You must specify which 'type' of get to use"}
@@ -218,6 +223,7 @@ class Raw:
 
         if userAgent:
             self.header["user-agent"] = userAgent
+            self.user_agent = userAgent
 
         elif self.user_agent:
             self.header["user-agent"] = self.user_agent
@@ -253,7 +259,7 @@ class Raw:
 
     def getAccessToken(self):
 
-        self.getHeaders()
+        self.getHeaders(userAgent="tester by @arkitekt")
 
         data = {"client_id": self.client_id,
                 "client_secret": self.client_secret,
