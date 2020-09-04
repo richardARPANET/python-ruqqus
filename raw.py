@@ -16,6 +16,8 @@ class Raw:
         self.refresh_token = None
         self.token_expire_utc = 0
 
+        self.getHeaders(user_agent="tester by @arkitekt")
+
         if not self.client_id or self.client_secret:
             exit("You must provide both a 'client_id' and 'client_secret")
 
@@ -35,7 +37,84 @@ class Raw:
             else:
                 self.getAccessToken()
 
+    def admin(self):
+        # TODO: admin stuff?
+        pass
+
+    def mod(self):
+        # TODO: Mod stuff
+        pass
+
+    def identity(self):
+        self.getHeaders()
+
+        return response.get(url=f"{self.url}/api/v1/identity",
+                            headers=self.headers).json()
+
+    def user(self, userName=None, type=None):
+
+        self.getHeaders()
+
+        if not userName:
+            return {"error": "You must provide a username."}
+
+        if type:
+            type = str(type).lower()
+
+        # Default to user
+        if not type or type == "user":
+            return requests.get(url=f"{self.url}/api/v1/user/{userName}",
+                                 headers=self.headers).json()
+
+        elif type == "is_available":
+            return requests.get(url=f"{self.url}/api/v1/is_available/{userName}",
+                                headers=self.headers).json()
+
+        elif type == "sub":
+            return requests.post(url=f"{self.url}/api/v1/follow/{userName}",
+                                headers=self.headers).json()
+
+        elif type == "unsub":
+            return requests.post(url=f"{self.url}/api/v1/follow/{userName}",
+                                 headers=self.headers).json()
+        else:
+            return {"error": "Invalid Call"}
+
+    def guild(self, guildName=None, type=None):
+
+        self.getHeaders(user_agent="tester by @arkitekt")
+
+        if not guildName:
+            return {"error": "You must provide a guildName."}
+
+        if type:
+            type = str(type).lower()
+
+
+        if not type or type == "guild":
+            return requests.get(url=f"{self.url}/api/v1/guild/{guildName}",
+                                 headers=self.headers).json()
+
+        elif type == "is_available":
+            # Default to is_available
+            return requests.get(url=f"{self.url}/api/v1/board_available/{guildName}",
+                                headers=self.headers).json()
+
+        elif type == "sub":
+            return requests.post(url=f"{self.url}/api/v1/subscribe/{guildName}",
+                                headers=self.headers).json()
+
+        elif type == "unsub":
+            return requests.post(url=f"{self.url}/api/v1/unsubscribe/{guildName}",
+                                 headers=self.headers).json()
+        else:
+            return {"error": "Invalid Call"}
+
+
+
     def get(self, type=None, sort=None, time=None, guildName=None, userName=None, postId=None, commentId=None):
+
+        self.getHeaders(user_agent="tester by @arkitekt")
 
         if not type:
             return {"error": "You must specify which 'type' of get to use"}
@@ -55,8 +134,6 @@ class Raw:
             if sort not in ["top", "hot", "disputed", "activity", "new"]:
                return {"error": "Invalid sort parameter."}
 
-        self.getHeaders(user_agent="tester by @arkitekt")
-
         if type == "front":
 
             if sort:
@@ -72,7 +149,7 @@ class Raw:
             return requests.get(url=f"{self.url}/api/v1/front/listing",
                                 headers=self.headers).json()
 
-        if type == "guild":
+        elif type == "guild":
 
             if not guildName:
                 return {"error": "You must provide a guildName"}
@@ -93,7 +170,7 @@ class Raw:
             return requests.get(url=f"{self.url}/api/v1/guild/{guildName}/listing",
                                 headers=self.headers).json()
 
-        if type == "user":
+        elif type == "user":
 
             if not userName:
                 return {"error": "You must provide a userName."}
@@ -104,7 +181,7 @@ class Raw:
             return requests.get(url=f"{self.url}/api/v1/user/{userName}",
                                 headers=self.headers).json()
 
-        if type == "post":
+        elif type == "post":
 
             if not postId:
                 return {"error": "You must provide a postId."}
@@ -115,7 +192,7 @@ class Raw:
             return requests.get(url=f"{self.url}/api/v1/post/{postId}",
                                 headers=self.headers).json()
 
-        if type == "comment":
+        elif type == "comment":
 
             if not commentId:
                 return {"error": "You must provide a commentId."}
@@ -125,12 +202,10 @@ class Raw:
                                 )
             return requests.get(url=f"{self.url}/api/v1/comment/{commentId}",
                                 headers=self.headers).json()
+        else:
+            return {"error": "Invalid Call"}
 
     def getHeaders(self, userAgent=None, accessToken=None):
-
-        # refresh token 30 seconds before expiration
-        if self.refresh_token and self.token_expire_utc >= int(time() - 30):
-            self.refreshToken()
 
         if self.access_token:
             self.headers = {"Authorization": "Bearer " + self.access_token}
@@ -149,6 +224,10 @@ class Raw:
 
         else:
             return {"error": "You must provide a user-agent."}
+
+        # refresh token 30 seconds before expiration
+        if self.refresh_token and self.token_expire_utc >= int(time() - 30):
+            self.refreshToken()
 
     def refreshToken(self, refreshToken=None):
 
