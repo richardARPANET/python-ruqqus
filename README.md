@@ -4,8 +4,38 @@ Python Wrapper for Ruqqus API
 
 ## Installation
 
-Run: `pip3 install ruqqus`
+From withing a Python virtualenv.
 
-## How to implement python-ruqqus in your application
+```bash
+pip install ruqqus
+```
 
-`import ruqqus`
+For development:
+
+```bash
+pip install -r requirements-dev.txt
+python setup.py develop
+```
+
+## Example Usage
+
+See ``example.py``.
+
+## Making a new release
+
+Run the below command and follow the wizard instructions. This will package the release and upload to pypi.
+
+```bash
+pip install -r requirements-dev.txt
+fullrelease
+```
+
+## Code formatting
+
+This project uses the [brunette](https://pypi.org/project/brunette/) code formatter.
+
+How to use:
+
+```bash
+brunette *.py
+```
